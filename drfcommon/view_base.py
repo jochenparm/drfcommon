@@ -7,7 +7,6 @@ import logging
 
 from rest_framework.viewsets import ModelViewSet
 from drfcommon.exceptions import com_exception_handler
-from drfcommon.pagination import ComStandardPagination
 from drfcommon.response import done
 
 
@@ -45,7 +44,6 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
     3.update
     4.create
     """
-    pagination_class = ComStandardPagination
 
     def get_exception_handler(self):
         """
@@ -59,7 +57,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
         code = 400
         return done(
             code=code,
-            describe='请检查请求参数',
+            msg='请检查请求参数',
             errors=errors,
         )
 
@@ -157,7 +155,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
         :param kwargs:
         :return:
         """
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, many=True)
         if not serializer.is_valid():
             logger.error('serializer err:{}'.format(serializer.errors))
             return self.errors(serializer.errors)

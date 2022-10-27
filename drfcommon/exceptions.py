@@ -5,6 +5,7 @@ exceptions.py
 
 import logging
 
+from django.db import DatabaseError
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
 from rest_framework import status, exceptions
@@ -96,8 +97,12 @@ def exception_handler(exc, context):
     """
     code = ComCodeChoice.API_ERR
     msg = "{}".format(exc)
+    logger.error(msg, exc_info=True)
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
+    elif isinstance(exc, ValidationError):
+        # 400
+        code = ComCodeChoice.BAD
     elif isinstance(exc, NotAuthenticated):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR
@@ -107,7 +112,9 @@ def exception_handler(exc, context):
     elif isinstance(exc, PermissionDenied):
         # 403
         code = ComCodeChoice.FORBIDDEN_ERR
-    logger.error(msg, exc_info=True)
+    elif isinstance(exc, DatabaseError):
+        code = ComCodeChoice.DB_ERR
+        msg = "服务器内部数据库错误"
     if isinstance(exc, exceptions.APIException):
         headers = {}
         if getattr(exc, 'auth_header', None):
@@ -122,10 +129,10 @@ def exception_handler(exc, context):
         set_rollback()
         return done(
             code=code,
-            describe=ComCodeChoice.choices_map[code],
+            msg=ComCodeChoice.choices_map[code],
             errors=data,
         )
-    return done(code=code, describe=msg)
+    return done(code=code, msg=msg)
 
 
 def com_exception_handler(exc, context):

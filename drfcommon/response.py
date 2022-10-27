@@ -6,12 +6,12 @@ doc:
 from rest_framework.response import Response
 
 
-def make_data(code=200, message='', **kwargs):
+def make_data(code=200, msg='', **kwargs):
     """
 
-    :param message:
+    :param msg:
     :param code: 200(成功), 101(参数错误), 199(其他)
-    :return:
+    :return: dict
     """
     if "data" not in kwargs:
         kwargs["data"] = dict()
@@ -20,34 +20,34 @@ def make_data(code=200, message='', **kwargs):
 
     resp = dict(
         code=code,
-        message=message,
+        msg=msg,
         **kwargs
     )
     return resp
 
 
-def make_response(code=200, message='成功', **kwargs):
+def make_response(code=200, msg='成功', **kwargs):
     """
 
-    :param message:
+    :param msg:
     :param code: 200(成功), 101(参数错误), 199(其他),
-    :return:
+    :return: Response
     """
-    data = make_data(code=code, message=message, **kwargs)
+    data = make_data(code=code, msg=msg, **kwargs)
     return Response(data)
 
 
-def done(code=200, message='成功', **kwargs):
+def done(code=200, msg='成功', **kwargs):
     """
 
     :param code:
-    :param message:
+    :param msg:
     :param kwargs:
-    :return:
+    :return: Response
     """
     data = make_response(
         code=code,
-        message=message,
+        msg=msg,
         **kwargs
     )
     return data
