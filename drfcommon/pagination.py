@@ -99,8 +99,9 @@ class ComStandardPagination(PageNumberPagination):
         total_size = self.page.paginator.count
         next_link = self.get_next_link()
         return make_response(
-            total_size=total_size,
-            data=data,
+            total=total_size,
+            data={},
+            items=data,
             next_link=next_link,
         )
 

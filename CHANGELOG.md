@@ -1,7 +1,7 @@
 # [版本更新](https://github.com/pydtools/drfcommon/blob/main/CHANGELOG.md)
-humplib
+drfcommon
 
-[0.1] 驼峰转下划线，下划线转驼峰
-[0.3] python json 转为双引号 方便其他语言
-[0.4] support byte/str
-[0.5] json snake 2 hump
+[0.1.6] list data add items 
+[0.1.8] data format
+[0.1.8.2] viewset 定制异常处理
+[0.1.8.3] is_deleted

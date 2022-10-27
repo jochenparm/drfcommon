@@ -14,48 +14,6 @@ from drfcommon.response import done
 logger = logging.getLogger("debug")
 
 
-class ComApiMixin:
-    @staticmethod
-    def get_exception_handler():
-        """
-        Returns the exception handler that this view uses.
-        """
-        return com_exception_handler
-
-    def initialize_request(self, request, *args, **kwargs):
-        """
-        Returns the initial request object.
-        """
-        logger.debug(
-            "initialize_request:header:{}".format(request.headers))
-        logger.debug("initialize_request:body:{}".format(request.body))
-        return super().initialize_request(request, *args, **kwargs)
-
-    @staticmethod
-    def errors(errors):
-        logger.error("err:{}".format(errors))
-        code = 400
-        return done(
-            code=code,
-            describe='请检查请求参数',
-            errors=errors,
-            data=None
-        )
-
-    def do_request(self, request):
-        """
-
-        :param request:
-        :return: resp, err
-        """
-        serializer = self.get_serializer(data=request.data)
-        if not serializer.is_valid():
-            logger.error(u'serializer err:{}'.format(serializer.errors))
-            return None, serializer.errors
-        validated_data = serializer.validated_data
-        return validated_data, None
-
-
 class AllowAnyModelViewSet(ModelViewSet):
     """
     AllowAny  ModelViewSet
@@ -71,7 +29,7 @@ class AllowAnyModelViewSet(ModelViewSet):
         return self.serializer_map.get(self.action, self.serializer_class)
 
 
-class ComApiBaseModelSet(AllowAnyModelViewSet, ComApiMixin):
+class ComApiBaseModelSet(AllowAnyModelViewSet):
     """
     Com App Base ModelViewSet
 
@@ -88,6 +46,22 @@ class ComApiBaseModelSet(AllowAnyModelViewSet, ComApiMixin):
     4.create
     """
     pagination_class = ComStandardPagination
+
+    def get_exception_handler(self):
+        """
+        Returns the exception handler that this view uses.
+        """
+        return com_exception_handler
+
+    @staticmethod
+    def errors(errors):
+        logger.error("err:{}".format(errors))
+        code = 400
+        return done(
+            code=code,
+            describe='请检查请求参数',
+            errors=errors,
+        )
 
     def destroy(self, request, *args, **kwargs):
         """
@@ -106,7 +80,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet, ComApiMixin):
         :param instance:
         :return:
         """
-        instance.is_deleted = True
+        instance.deleted = True
         instance.save()
 
     def list(self, request, *args, **kwargs):
@@ -123,7 +97,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet, ComApiMixin):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
-        return done(data=serializer.data)
+        return done(data={}, items=serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         """

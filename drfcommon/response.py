@@ -13,6 +13,11 @@ def make_data(code=200, describe='', **kwargs):
     :param code: 200(成功), 101(参数错误), 199(其他)
     :return:
     """
+    if "data" not in kwargs:
+        kwargs["data"] = dict()
+    if "items" not in kwargs:
+        kwargs["items"] = list()
+
     resp = dict(
         code=code,
         describe=describe, **kwargs
