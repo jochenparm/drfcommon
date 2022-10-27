@@ -23,22 +23,23 @@ from drfcommon.response import done
 logger = logging.getLogger('debug')
 
 
-class MyValidationError(ValidationError):
+class ComValidationError(ValidationError):
     """
-    MyValidation Error
+    ComValidation Error
     """
     status_code = status.HTTP_400_BAD_REQUEST
 
     def __init__(self, detail=None, code=None):
-        logger.error('ValidationError detail:{} code:{}'.format(detail, code))
+        logger.error('ComValidationError detail:{} code:{}'.format(
+            detail, code))
         if code:
             self.status_code = code
-        super(MyValidationError, self).__init__(detail=detail, code=code)
+        super().__init__(detail=detail, code=code)
 
 
-class MyAPIException(APIException):
+class ComAPIException(APIException):
     """
-    detail 只返回string
+    ComAPIException detail 只返回string
     """
     status_code = status.HTTP_200_OK
     default_detail = _('A server error occurred.')
@@ -46,11 +47,11 @@ class MyAPIException(APIException):
     err_code = status.HTTP_200_OK
 
     def __init__(self, detail=None, err_code=None):
-        logger.error('APIException detail:{} code:{}'.format(detail, err_code))
+        logger.error('ComAPIException detail:{} code:{}'.format(
+            detail, err_code))
         if err_code:
             self.err_code = err_code
-        super(MyAPIException, self).__init__(
-            detail=detail, code=self.status_code)
+        super().__init__(detail=detail, code=self.status_code)
 
 
 def custom_view_exception_handler(exc, context):

@@ -1,17 +1,16 @@
 [tool.poetry]
 name = "drfcommon"
-version = "0.1.8.3"
+version = "0.1.8.6"
 description = "a common tools for drf"
-authors = ["huoyinghui <hyhlinux@163.com>"]
+authors = ["tplinux <tplinux@163.com>"]
 homepage = "https://github.com/pydtools/drfcommon/"
 repository = "https://github.com/pydtools/drfcommon/"
 documentation = "https://github.com/pydtools/drfcommon/wiki"
 include = ["CHANGELOG.md"]
 [tool.poetry.dependencies]
 python = "^3.7"
-django = "^2.2 || ^3.0"
 djangorestframework = "^3.12.2"
-drfhumplib = "^0.1.4.1"
+django = "^3.2"
 
 
 [tool.poetry.dev-dependencies]

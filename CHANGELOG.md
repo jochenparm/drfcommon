@@ -5,3 +5,4 @@ drfcommon
 [0.1.8] data format
 [0.1.8.2] viewset 定制异常处理
 [0.1.8.3] is_deleted
+[0.1.8.6] describe -> message

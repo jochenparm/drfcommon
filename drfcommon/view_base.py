@@ -11,7 +11,7 @@ from drfcommon.pagination import ComStandardPagination
 from drfcommon.response import done
 
 
-logger = logging.getLogger("debug")
+logger = logging.getLogger('debug')
 
 
 class AllowAnyModelViewSet(ModelViewSet):

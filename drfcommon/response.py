@@ -6,10 +6,10 @@ doc:
 from rest_framework.response import Response
 
 
-def make_data(code=200, describe='', **kwargs):
+def make_data(code=200, message='', **kwargs):
     """
 
-    :param describe:
+    :param message:
     :param code: 200(成功), 101(参数错误), 199(其他)
     :return:
     """
@@ -20,32 +20,34 @@ def make_data(code=200, describe='', **kwargs):
 
     resp = dict(
         code=code,
-        describe=describe, **kwargs
+        message=message,
+        **kwargs
     )
     return resp
 
 
-def make_response(code=200, describe='成功', **kwargs):
+def make_response(code=200, message='成功', **kwargs):
     """
 
-    :param describe:
+    :param message:
     :param code: 200(成功), 101(参数错误), 199(其他),
     :return:
     """
-    data = make_data(code=code, describe=describe, **kwargs)
+    data = make_data(code=code, message=message, **kwargs)
     return Response(data)
 
 
-def done(code=200, describe='成功', **kwargs):
+def done(code=200, message='成功', **kwargs):
     """
 
     :param code:
-    :param describe:
+    :param message:
     :param kwargs:
     :return:
     """
     data = make_response(
-        code=code, describe=describe,
+        code=code,
+        message=message,
         **kwargs
     )
     return data
