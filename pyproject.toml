@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "drfcommon"
-version = "0.1.8.6.4"
+version = "0.1.8.6.9"
 description = "a common tools for drf"
 authors = ["tplinux <tplinux@163.com>"]
 homepage = "https://github.com/pydtools/drfcommon/"

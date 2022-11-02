@@ -53,7 +53,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
 
     @staticmethod
     def errors(errors):
-        logger.error("err:{}".format(errors))
+        logger.error("errors:{}".format(errors))
         code = 400
         return done(
             code=code,
@@ -95,7 +95,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
             serializer = self.get_serializer(page, many=True)
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
-        return done(data={}, items=serializer.data)
+        return done(data={}, lists=serializer.data)
 
     def retrieve(self, request, *args, **kwargs):
         """
@@ -117,15 +117,25 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
         :param kwargs:
         :return:
         """
+        partial = kwargs.pop('partial', False)
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data,
+                                         partial=partial)
         if not serializer.is_valid():
-            logger.error('serializer err:{}'.format(serializer.errors))
             return self.errors(serializer.errors)
-        validated_data = serializer.validated_data
-        # 更新逻辑: 由调用方序列化定制
-        serializer.update(instance, validated_data)
-        return done(data=validated_data)
+        self.perform_update(serializer)
+        if getattr(instance, '_prefetched_objects_cache', None):
+            # If 'prefetch_related' has been applied to a queryset, we need to
+            # forcibly invalidate the prefetch cache on the instance.
+            instance._prefetched_objects_cache = {}
+        return done(data=serializer.data)
+
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def partial_update(self, request, *args, **kwargs):
+        kwargs['partial'] = True
+        return self.update(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):
         """
@@ -137,7 +147,6 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
         """
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
-            logger.error('serializer err:{}'.format(serializer.errors))
             return self.errors(serializer.errors)
         validated_data = serializer.validated_data
         # 创建逻辑: 由调用方序列化定制
@@ -157,7 +166,6 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
         """
         serializer = self.get_serializer(data=request.data, many=True)
         if not serializer.is_valid():
-            logger.error('serializer err:{}'.format(serializer.errors))
             return self.errors(serializer.errors)
         validated_data = serializer.validated_data
         instance_list = serializer.create(validated_data)

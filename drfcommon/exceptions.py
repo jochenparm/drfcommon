@@ -103,6 +103,11 @@ def exception_handler(exc, context):
     elif isinstance(exc, ValidationError):
         # 400
         code = ComCodeChoice.BAD
+        msg = exc.get_full_details()
+    elif isinstance(exc, ComValidationError):
+        # 400
+        code = ComCodeChoice.BAD
+        msg = exc.get_full_details()
     elif isinstance(exc, NotAuthenticated):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR

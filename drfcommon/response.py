@@ -15,9 +15,9 @@ def make_data(code=200, msg='', **kwargs):
     """
     if "data" not in kwargs:
         kwargs["data"] = dict()
-    if "items" not in kwargs:
-        kwargs["items"] = list()
 
+    if "lists" not in kwargs:
+        kwargs["lists"] = list()
     resp = dict(
         code=code,
         msg=msg,
