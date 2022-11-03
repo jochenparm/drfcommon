@@ -14,7 +14,7 @@ from rest_framework.exceptions import (
     ValidationError,
     AuthenticationFailed,
     PermissionDenied,
-    NotAuthenticated,
+    NotAuthenticated, MethodNotAllowed,
 )
 from rest_framework.views import exception_handler, set_rollback
 
@@ -55,36 +55,6 @@ class ComAPIException(APIException):
         super().__init__(detail=detail, code=self.status_code)
 
 
-def custom_view_exception_handler(exc, context):
-    """
-    处理views中的异常, 视图函数只返回200，errmsg/errcode
-
-    exc.detail
-        if isinstance(exc.detail, (list, dict)):
-            data = exc.detail
-        else:
-            data = {'detail': exc.detail}
-
-    :param exc: APIException
-    :param context:
-    :return:
-    """
-    response = exception_handler(exc, context)
-
-    # Now add the HTTP status code to the response.
-    if not response:
-        return response
-    # 保存错误码.
-    if hasattr(exc, 'err_code'):
-        response.data['errcode'] = exc.err_code
-        response.status_code = status.HTTP_200_OK
-    if 'detail' in response.data:
-        detail = response.data.pop('detail')
-        if detail:
-            response.data['errmsg'] = detail
-    return response
-
-
 def exception_handler(exc, context):
     """
     Returns the response that should be used for any given exception.
@@ -96,8 +66,8 @@ def exception_handler(exc, context):
     to be raised.
     """
     code = ComCodeChoice.API_ERR
-    msg = "{}".format(exc)
-    logger.error(msg, exc_info=True)
+    msg = None
+    logger.error("raw exc {}".format(exc), exc_info=True)
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
     elif isinstance(exc, ValidationError):
@@ -114,12 +84,19 @@ def exception_handler(exc, context):
     elif isinstance(exc, AuthenticationFailed):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR
+    elif isinstance(exc, MethodNotAllowed):
+        code = ComCodeChoice.MethodNotAllowed
     elif isinstance(exc, PermissionDenied):
         # 403
         code = ComCodeChoice.FORBIDDEN_ERR
     elif isinstance(exc, DatabaseError):
         code = ComCodeChoice.DB_ERR
-        msg = "服务器内部数据库错误"
+    else:
+        # 如果没有处理，保留原始的错误
+        msg = "{}".format(exc)
+    # msg 是否被设置
+    if not msg:
+        msg = ComCodeChoice.choices_map[code]
     if isinstance(exc, exceptions.APIException):
         headers = {}
         if getattr(exc, 'auth_header', None):
@@ -134,7 +111,8 @@ def exception_handler(exc, context):
         set_rollback()
         return done(
             code=code,
-            msg=ComCodeChoice.choices_map[code],
+            msg=msg,
+            # dict
             errors=data,
         )
     return done(code=code, msg=msg)
@@ -156,3 +134,4 @@ def com_exception_handler(exc, context):
     """
     response = exception_handler(exc, context)
     return response
+
