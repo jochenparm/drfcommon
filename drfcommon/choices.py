@@ -16,13 +16,3 @@ class ComCodeChoice(Choices):
     API_ERR = (500, '内部错误')
     DB_ERR = (507, '服务器内部数据库问题')
 
-    LOG_PRINT_LEVEL = {
-        OK: logging.debug,
-        BAD: logging.warning,
-        UNAUTHORIZED_ERR: logging.warning,
-        FORBIDDEN_ERR: logging.warning,
-        API_NOT_FUND: logging.error,
-        HTTP_405_METHOD_NOT_ALLOWED: logging.error,
-        API_ERR: logging.error,
-        DB_ERR: logging.error,
-    }

@@ -14,11 +14,13 @@ from rest_framework.exceptions import (
     ValidationError,
     AuthenticationFailed,
     PermissionDenied,
-    NotAuthenticated, MethodNotAllowed,
+    NotAuthenticated,
+    MethodNotAllowed,
 )
 from rest_framework.views import exception_handler, set_rollback
 
 from drfcommon.choices import ComCodeChoice
+from drfcommon.log import LOG_PRINT_FUNC
 from drfcommon.response import done
 
 logger = logging.getLogger('debug')
@@ -91,7 +93,7 @@ def exception_handler(exc, context):
     else:
         # 如果没有处理，保留原始的错误
         msg = "{}".format(exc)
-    logger_print = ComCodeChoice.LOG_PRINT_LEVEL.get(code, logger.error)
+    logger_print = LOG_PRINT_FUNC.get(code, logger.error)
     logger_print("raw exc {}".format(exc), exc_info=True)
     # msg 是否被设置. 无，使用自定义
     if not msg:
