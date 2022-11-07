@@ -53,7 +53,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
 
     @staticmethod
     def errors(errors):
-        logger.error("errors:{}".format(errors))
+        logger.warning("errors:{}".format(errors))
         code = 400
         return done(
             code=code,

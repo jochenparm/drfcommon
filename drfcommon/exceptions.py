@@ -67,7 +67,6 @@ def exception_handler(exc, context):
     """
     code = ComCodeChoice.API_ERR
     msg = None
-    logger.error("raw exc {}".format(exc), exc_info=True)
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
     elif isinstance(exc, ValidationError):
@@ -92,6 +91,8 @@ def exception_handler(exc, context):
     else:
         # 如果没有处理，保留原始的错误
         msg = "{}".format(exc)
+    logger_print = ComCodeChoice.LOG_PRINT_LEVEL.get(code, logger.error)
+    logger_print("raw exc {}".format(exc), exc_info=True)
     # msg 是否被设置. 无，使用自定义
     if not msg:
         msg = ComCodeChoice.choices_map[code]
