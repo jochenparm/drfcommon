@@ -8,3 +8,4 @@ drfcommon
 [0.1.8.6] describe -> message
 [0.1.8.6.9] update 保持一致
 [0.1.8.7] 异常加入 405
+[0.1.9] 异常msg返回str

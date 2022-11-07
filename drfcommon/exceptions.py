@@ -73,11 +73,9 @@ def exception_handler(exc, context):
     elif isinstance(exc, ValidationError):
         # 400
         code = ComCodeChoice.BAD
-        msg = exc.get_full_details()
     elif isinstance(exc, ComValidationError):
         # 400
         code = ComCodeChoice.BAD
-        msg = exc.get_full_details()
     elif isinstance(exc, NotAuthenticated):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR
@@ -85,7 +83,7 @@ def exception_handler(exc, context):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR
     elif isinstance(exc, MethodNotAllowed):
-        code = ComCodeChoice.MethodNotAllowed
+        code = ComCodeChoice.HTTP_405_METHOD_NOT_ALLOWED
     elif isinstance(exc, PermissionDenied):
         # 403
         code = ComCodeChoice.FORBIDDEN_ERR
@@ -94,7 +92,7 @@ def exception_handler(exc, context):
     else:
         # 如果没有处理，保留原始的错误
         msg = "{}".format(exc)
-    # msg 是否被设置
+    # msg 是否被设置. 无，使用自定义
     if not msg:
         msg = ComCodeChoice.choices_map[code]
     if isinstance(exc, exceptions.APIException):
