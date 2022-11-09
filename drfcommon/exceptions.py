@@ -5,6 +5,7 @@ exceptions.py
 
 import logging
 
+from django.core.paginator import EmptyPage
 from django.db import DatabaseError
 from django.http import Http404
 from django.utils.translation import gettext_lazy as _
@@ -61,7 +62,7 @@ def exception_handler(exc, context):
     Any unhandled exceptions may return `None`, which will cause a 500 error
     to be raised.
     """
-    code = ComCodeChoice.API_ERR
+    code = ComCodeChoice.BAD
     msg = None
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
@@ -82,6 +83,9 @@ def exception_handler(exc, context):
     elif isinstance(exc, PermissionDenied):
         # 403
         code = ComCodeChoice.FORBIDDEN_ERR
+    elif isinstance(exc, EmptyPage):
+        # 404
+        code = ComCodeChoice.API_NOT_FUND
     elif isinstance(exc, DatabaseError):
         code = ComCodeChoice.DB_ERR
     else:
