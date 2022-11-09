@@ -20,10 +20,8 @@ from rest_framework.exceptions import (
 from rest_framework.views import exception_handler, set_rollback
 
 from drfcommon.choices import ComCodeChoice
-from drfcommon.log import LOG_PRINT_FUNC
+from drfcommon.log import logger_print_by_code
 from drfcommon.response import done
-
-logger = logging.getLogger('debug')
 
 
 class ComValidationError(ValidationError):
@@ -33,8 +31,6 @@ class ComValidationError(ValidationError):
     status_code = status.HTTP_400_BAD_REQUEST
 
     def __init__(self, detail=None, code=None):
-        logger.error('ComValidationError detail:{} code:{}'.format(
-            detail, code))
         if code:
             self.status_code = code
         super().__init__(detail=detail, code=code)
@@ -50,8 +46,6 @@ class ComAPIException(APIException):
     err_code = status.HTTP_200_OK
 
     def __init__(self, detail=None, err_code=None):
-        logger.error('ComAPIException detail:{} code:{}'.format(
-            detail, err_code))
         if err_code:
             self.err_code = err_code
         super().__init__(detail=detail, code=self.status_code)
@@ -93,8 +87,7 @@ def exception_handler(exc, context):
     else:
         # 如果没有处理，保留原始的错误
         msg = "{}".format(exc)
-    logger_print = LOG_PRINT_FUNC.get(code, logger.error)
-    logger_print("raw exc {}".format(exc), exc_info=True)
+    logger_print_by_code(code, exc)
     # msg 是否被设置. 无，使用自定义
     if not msg:
         msg = ComCodeChoice.choices_map[code]
