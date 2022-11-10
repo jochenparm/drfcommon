@@ -17,7 +17,7 @@ from rest_framework.exceptions import (
     PermissionDenied,
     NotAuthenticated,
     MethodNotAllowed,
-    NotFound,
+    NotFound, ParseError,
 )
 from rest_framework.views import exception_handler, set_rollback
 
@@ -63,7 +63,7 @@ def exception_handler(exc, context):
     Any unhandled exceptions may return `None`, which will cause a 500 error
     to be raised.
     """
-    code = ComCodeChoice.BAD
+    code = ComCodeChoice.API_ERR
     msg = None
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
@@ -73,6 +73,9 @@ def exception_handler(exc, context):
     elif isinstance(exc, NotFound):
         # 404
         code = ComCodeChoice.API_NOT_FUND
+    elif isinstance(exc, ParseError):
+        # 400
+        code = ComCodeChoice.BAD
     elif isinstance(exc, ValidationError):
         # 400
         code = ComCodeChoice.BAD
