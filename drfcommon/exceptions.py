@@ -17,6 +17,7 @@ from rest_framework.exceptions import (
     PermissionDenied,
     NotAuthenticated,
     MethodNotAllowed,
+    NotFound,
 )
 from rest_framework.views import exception_handler, set_rollback
 
@@ -66,6 +67,12 @@ def exception_handler(exc, context):
     msg = None
     if isinstance(exc, Http404):
         code = ComCodeChoice.API_NOT_FUND
+    elif isinstance(exc, EmptyPage):
+        # 404
+        code = ComCodeChoice.API_NOT_FUND
+    elif isinstance(exc, NotFound):
+        # 404
+        code = ComCodeChoice.API_NOT_FUND
     elif isinstance(exc, ValidationError):
         # 400
         code = ComCodeChoice.BAD
@@ -83,9 +90,6 @@ def exception_handler(exc, context):
     elif isinstance(exc, PermissionDenied):
         # 403
         code = ComCodeChoice.FORBIDDEN_ERR
-    elif isinstance(exc, EmptyPage):
-        # 404
-        code = ComCodeChoice.API_NOT_FUND
     elif isinstance(exc, DatabaseError):
         code = ComCodeChoice.DB_ERR
     else:
