@@ -15,3 +15,4 @@ drfcommon
 [0.1.9.4] 加入异常空页面
 [0.1.9.5] Fix import
 [0.1.9.6] Fix Api Err
+[0.1.9.7] add ComPagination

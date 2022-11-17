@@ -2,7 +2,8 @@
 from collections import OrderedDict
 
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
+
+from drfcommon.response import done
 
 
 class ComPagination(PageNumberPagination):
@@ -14,7 +15,8 @@ class ComPagination(PageNumberPagination):
     max_page_size = 50
 
     def get_paginated_response(self, data):
-        return Response(OrderedDict([
+        page_data = OrderedDict([
+            ('count', self.page.paginator.count),
             ('count', self.page.paginator.count),
             ('page', self.page.number),
             # 总页数量
@@ -22,4 +24,5 @@ class ComPagination(PageNumberPagination):
             # 每页数量
             ('pagesize', self.get_page_size(self.request)),
             ('lists', data)
-        ]))
+        ])
+        return done(**page_data)

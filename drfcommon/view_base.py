@@ -7,6 +7,7 @@ import logging
 
 from rest_framework.viewsets import ModelViewSet
 from drfcommon.exceptions import com_exception_handler
+from drfcommon.pagination import ComPagination
 from drfcommon.response import done
 
 
@@ -44,6 +45,7 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
     3.update
     4.create
     """
+    pagination_class = ComPagination
 
     def get_exception_handler(self):
         """
