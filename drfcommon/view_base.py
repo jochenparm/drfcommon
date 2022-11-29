@@ -7,6 +7,7 @@ import logging
 
 from rest_framework.viewsets import ModelViewSet
 from drfcommon.exceptions import com_exception_handler
+from drfcommon.helper import handler_err
 from drfcommon.pagination import ComPagination
 from drfcommon.response import done
 
@@ -57,9 +58,11 @@ class ComApiBaseModelSet(AllowAnyModelViewSet):
     def errors(errors):
         logger.warning("errors:{}".format(errors))
         code = 400
+        # 处理drf errors
+        msg = handler_err(errors)
         return done(
             code=code,
-            msg='请检查请求参数',
+            msg=msg,
             errors=errors,
         )
 
