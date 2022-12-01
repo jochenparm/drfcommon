@@ -25,5 +25,8 @@ class ComPagination(PageNumberPagination):
             ('lists', data)
         ])
         if page_key:
-            return done(page_key=page_data)
+            page_map = {
+                page_key: page_data
+            }
+            return done(**page_map)
         return done(**page_data)

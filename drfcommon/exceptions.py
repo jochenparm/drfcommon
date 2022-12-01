@@ -22,6 +22,7 @@ from rest_framework.exceptions import (
 from rest_framework.views import exception_handler, set_rollback
 
 from drfcommon.choices import ComCodeChoice
+from drfcommon.helper import _handler_err
 from drfcommon.log import logger_print_by_code
 from drfcommon.response import done
 
@@ -76,12 +77,15 @@ def exception_handler(exc, context):
     elif isinstance(exc, ParseError):
         # 400
         code = ComCodeChoice.BAD
+        msg = _handler_err(exc.detail)
     elif isinstance(exc, ValidationError):
         # 400
         code = ComCodeChoice.BAD
+        msg = _handler_err(exc.detail)
     elif isinstance(exc, ComValidationError):
         # 400
         code = ComCodeChoice.BAD
+        msg = _handler_err(exc.detail)
     elif isinstance(exc, NotAuthenticated):
         # 401
         code = ComCodeChoice.UNAUTHORIZED_ERR
