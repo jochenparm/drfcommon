@@ -14,9 +14,8 @@ class ComPagination(PageNumberPagination):
     page_size_query_param = 'pagesize'
     max_page_size = 50
 
-    def get_paginated_response(self, data):
+    def get_paginated_response(self, data, page_key='data'):
         page_data = OrderedDict([
-            ('count', self.page.paginator.count),
             ('count', self.page.paginator.count),
             ('page', self.page.number),
             # 总页数量
@@ -25,4 +24,6 @@ class ComPagination(PageNumberPagination):
             ('pagesize', self.get_page_size(self.request)),
             ('lists', data)
         ])
+        if page_key:
+            return done(page_key=page_data)
         return done(**page_data)
